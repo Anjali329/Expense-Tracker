@@ -1,0 +1,50 @@
+Apollo Pharmacy
+MedPlus Pharmacy
+NetMeds Order
+PharmEasy Order
+1mg Medicine Order
+Hospital Bill
+Clinic Consultation
+Doctor Consultation
+Dental Clinic
+Eye Hospital
+Diagnostic Lab
+Blood Test
+MRI Scan
+CT Scan
+X-Ray Charges
+Health Checkup
+Vaccination
+Medical Store
+Medicine Purchase
+Emergency Treatment
+Physiotherapy Session
+Health Insurance Premium
+Fortis Hospital
+Max Hospital
+AIIMS Consultation
+Narayana Health
+Manipal Hospital
+Ruby Hall Clinic
+Jehangir Hospital
+KEM Hospital
+Care Hospital
+Apollo Hospital
+Medical Equipment
+Prescription Medicines
+Vitamin Supplements
+Covid Test
+ECG Test
+Ultrasound Scan
+Pathology Lab
+General Physician
+Skin Specialist
+ENT Consultation
+Orthopedic Consultation
+Pediatric Consultation
+Gynecology Consultation
+Mental Health Consultation
+Psychologist Session
+Health Package
+Ambulance Service
+Medical Expenses

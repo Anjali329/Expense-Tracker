@@ -1,0 +1,63 @@
+Swiggy Order
+Swiggy Instamart
+Swiggy Food Delivery
+SWIGGY UPI
+Swiggy Pune
+Swiggy Mumbai
+Swiggy Bengaluru
+Swiggy Hyderabad
+Zomato Order
+Zomato Gold
+ZOMATO UPI
+Zomato Food Delivery
+Domino's Pizza
+Pizza Hut
+Burger King
+McDonald's
+KFC
+Subway
+Starbucks
+Cafe Coffee Day
+Barbeque Nation
+Biryani By Kilo
+Behrouz Biryani
+Faasos
+Oven Story Pizza
+The Belgian Waffle Co
+Natural Ice Cream
+Baskin Robbins
+Haldiram's
+Sagar Ratna
+Saravana Bhavan
+Mainland China
+Wow! Momo
+Theobroma
+Chaayos
+Tea Post
+FreshMenu
+EatSure Order
+Dineout Payment
+Local Restaurant
+Chinese Restaurant
+South Indian Restaurant
+North Indian Restaurant
+Punjabi Dhaba
+Juice Center
+Bakery Purchase
+Sweet Shop
+Cafe Expense
+Coffee Purchase
+Ice Cream Parlour
+Food Court
+Mess Payment
+Canteen Payment
+Lunch Expense
+Dinner Expense
+Breakfast Expense
+Snacks Purchase
+Restaurant Bill
+Hotel Restaurant
+panipuri
+chat
+dosa idli
+chai

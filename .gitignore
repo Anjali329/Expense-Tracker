@@ -1,0 +1,21 @@
+# Environment variables
+.env
+**/.env
+
+# Node.js
+node_modules/
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# ML models
+*.joblib
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db

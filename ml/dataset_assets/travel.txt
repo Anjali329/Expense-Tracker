@@ -1,0 +1,50 @@
+Uber Ride
+Uber Auto
+Uber Moto
+Uber Intercity
+Ola Ride
+Ola Auto
+Ola Outstation
+Rapido Bike
+Rapido Auto
+IRCTC Ticket
+IRCTC Tatkal Booking
+RedBus Ticket
+AbhiBus Booking
+MakeMyTrip Flight
+MakeMyTrip Hotel
+Goibibo Flight
+Goibibo Hotel
+Yatra Flight Booking
+EaseMyTrip Booking
+IndiGo Flight
+Air India Flight
+SpiceJet Flight
+Vistara Flight
+Akasa Air Ticket
+Metro Card Recharge
+Mumbai Metro
+Delhi Metro
+Pune Metro
+Hyderabad Metro
+Namma Metro
+BMTC Bus Ticket
+BEST Bus Ticket
+State Transport Bus
+Taxi Fare
+Auto Rickshaw Fare
+Cab Booking
+Parking Fee
+FASTag Toll
+Highway Toll
+Fuel for Trip
+Hotel Booking
+Resort Booking
+Travel Insurance
+Airport Taxi
+Railway Platform Ticket
+Local Train Ticket
+Tour Package
+Holiday Booking
+Travel Agency
+Rental Car

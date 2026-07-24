@@ -1,0 +1,50 @@
+ATM Cash Withdrawal
+Cash Withdrawal
+Bank Charges
+Processing Fee
+Service Charge
+Cheque Deposit
+Cheque Clearance
+NEFT Transfer
+RTGS Transfer
+IMPS Transfer
+UPI Transfer
+Bank Transfer
+Money Transfer
+Wallet Transfer
+Donation
+Temple Donation
+NGO Donation
+Charity Payment
+Courier Charges
+Postal Charges
+Laundry Service
+Dry Cleaning
+Car Wash
+Vehicle Service
+Home Repair
+Electrician Charges
+Plumbing Charges
+Gardening Service
+House Cleaning
+Pet Care
+Baby Care
+Gift Purchase
+Marriage Gift
+Birthday Gift
+Festival Shopping
+Miscellaneous Expense
+General Expense
+Personal Expense
+Unknown Merchant
+Other Transaction
+Late Payment Fee
+Penalty Charges
+Annual Membership Fee
+Document Charges
+Printing Charges
+Photo Copy Charges
+Passport Fee
+Government Service Fee
+Municipal Charges
+Miscellaneous Payment

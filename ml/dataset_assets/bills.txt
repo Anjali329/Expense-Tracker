@@ -1,0 +1,51 @@
+Electricity Bill
+MSEDCL Electricity Bill
+Tata Power Bill
+Adani Electricity Bill
+Torrent Power Bill
+Water Bill
+Municipal Water Bill
+Gas Bill
+PNG Gas Bill
+LPG Cylinder Booking
+Indane Gas
+HP Gas Booking
+Bharat Gas Booking
+Jio Recharge
+Airtel Recharge
+Vi Recharge
+BSNL Recharge
+Mobile Recharge
+Broadband Bill
+Jio Fiber Bill
+Airtel Xstream Fiber
+ACT Fibernet
+Hathway Broadband
+Excitel Broadband
+Internet Bill
+WiFi Bill
+DTH Recharge
+Tata Play Recharge
+Dish TV Recharge
+Sun Direct Recharge
+Electricity Recharge
+Property Tax
+House Maintenance
+Apartment Maintenance
+Society Maintenance
+Sewage Bill
+Garbage Collection Fee
+Cloud Storage Subscription
+Google One Subscription
+iCloud Storage
+Microsoft 365 Subscription
+Adobe Creative Cloud
+Canva Pro Subscription
+GitHub Pro Subscription
+ChatGPT Plus Subscription
+Spotify Premium
+YouTube Premium
+Amazon Prime Membership
+OTT Subscription
+Annual Membership Fee
+Utility Bill Payment

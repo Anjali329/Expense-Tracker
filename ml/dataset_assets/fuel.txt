@@ -1,0 +1,40 @@
+Indian Oil Petrol Pump
+Indian Oil Fuel
+HP Petrol Pump
+HP Fuel Station
+Bharat Petroleum
+BPCL Fuel Station
+Shell Petrol Pump
+Reliance Petrol Pump
+Nayara Energy Fuel
+CNG Refill
+LPG Fuel
+Diesel Refill
+Petrol Refill
+EV Charging Station
+Tata Power EV Charging
+Ather Grid Charging
+ChargeZone EV
+Fuel Expense
+Fuel Station Payment
+Vehicle Fuel
+Bike Fuel
+Car Fuel
+Scooter Fuel
+FASTag Recharge
+FASTag Toll Recharge
+Fuel Card Payment
+Highway Fuel Stop
+Expressway Fuel
+Long Drive Fuel
+Petrol Bunk
+Gas Station
+Vehicle Refueling
+Premium Petrol
+Diesel Pump
+Fuel Purchase
+Auto Fuel
+Cab Fuel
+Commercial Vehicle Fuel
+Truck Fuel
+Bus Fuel
