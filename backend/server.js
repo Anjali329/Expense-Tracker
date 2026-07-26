@@ -1,9 +1,11 @@
 const express = require("express");
 const cors = require("cors");
+
 const pool = require("./config/db");
 
 const authRoutes = require("./routes/authRoutes");
 const transactionRoutes = require("./routes/transactionRoutes");
+const uploadRoutes = require("./routes/uploadRoutes");
 
 const app = express();
 
@@ -12,17 +14,8 @@ app.use(express.json());
 
 app.use("/auth", authRoutes);
 app.use("/transactions", transactionRoutes);
+app.use("/upload", uploadRoutes);
 
-// Connect to PostgreSQL
-pool.connect()
-  .then(() => {
-    console.log("✅ Database Connected");
-  })
-  .catch((err) => {
-    console.error(err);
-  });
-
-// Test Route
 app.get("/ping", (req, res) => {
   res.json({
     success: true,
@@ -32,6 +25,20 @@ app.get("/ping", (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+
   console.log(`🚀 Server running on http://localhost:${PORT}`);
+
+  try {
+
+    await pool.query("SELECT NOW()");
+    console.log("✅ Database Connected");
+
+  } catch (err) {
+
+    console.error("Database Connection Failed");
+    console.error(err);
+
+  }
+
 });

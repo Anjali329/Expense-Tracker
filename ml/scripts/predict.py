@@ -1,35 +1,22 @@
 import joblib
+import sys
+import os
 
-# ==============================
-# Load Model and Vectorizer
-# ==============================
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-model = joblib.load("models/expense_classifier.joblib")
-vectorizer = joblib.load("models/tfidf_vectorizer.joblib")
+model = joblib.load(
+    os.path.join(BASE_DIR, "../models/expense_classifier.joblib")
+)
 
-print("Model Loaded Successfully!")
-
-# ==============================
-# Confidence Threshold
-# ==============================
+vectorizer = joblib.load(
+    os.path.join(BASE_DIR, "../models/tfidf_vectorizer.joblib")
+)
 
 THRESHOLD = 0.70
 
-# ==============================
-# User Input
-# ==============================
-
-description = input("\nEnter Transaction Description: ")
-
-# ==============================
-# Convert to TF-IDF
-# ==============================
+description = sys.argv[1]
 
 description_vector = vectorizer.transform([description])
-
-# ==============================
-# Prediction Probabilities
-# ==============================
 
 probabilities = model.predict_proba(description_vector)[0]
 
@@ -39,16 +26,7 @@ confidence = probabilities[best_index]
 
 predicted_category = model.classes_[best_index]
 
-# ==============================
-# Final Output
-# ==============================
-
-print("\nPrediction Result")
-print("----------------------------")
-
 if confidence < THRESHOLD:
-    print("Category   : Needs Review")
-else:
-    print(f"Category   : {predicted_category}")
+    predicted_category = "Needs Review"
 
-print(f"Confidence : {confidence:.2%}")
+print(f"{predicted_category}|{confidence}")
