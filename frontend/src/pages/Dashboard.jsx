@@ -3,12 +3,16 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import Navbar from "../components/Navbar";
 import ExpensePieChart from "../components/ExpensePieChart";
+import MonthlyLineChart from "../components/MonthlyLineChart";
+import AnomalyAlert from "../components/AnomalyAlert";
 
 function Dashboard() {
 
   const navigate = useNavigate();
 
   const [transactions, setTransactions] = useState([]);
+
+  const [loading,setLoading] = useState(true);
 
   const [editingId, setEditingId] = useState(null);
 
@@ -91,6 +95,8 @@ function Dashboard() {
 
 
       setSummary(response.data);
+
+      setLoading(false);
 
 
     }
@@ -194,6 +200,16 @@ function Dashboard() {
 
   });
 
+  if(loading){
+
+ return(
+   <h2>
+     Loading Dashboard...
+   </h2>
+ )
+
+}
+
 
 
   return (
@@ -209,6 +225,15 @@ function Dashboard() {
     <h1>
       Expense Tracker Dashboard
     </h1>
+    <AnomalyAlert
+ message={
+   summary.totalExpense > 500000
+   ?
+   "Your spending is unusually high this month!"
+   :
+   null
+ }
+/>
 
 
 
@@ -316,11 +341,15 @@ function Dashboard() {
       Category Spending
     </h2>
 
+    {
+  summary.categorySpend.length > 0 ? (
     <ExpensePieChart
-
-    data={summary.categorySpend}
-
-/>
+      data={summary.categorySpend}
+    />
+  ) : (
+    <p>No category spending data available.</p>
+  )
+}
 
 
     <table
@@ -385,32 +414,38 @@ function Dashboard() {
     </table>
 
 
-
-
-
     <h2>
       Monthly Spending
-    </h2>
+</h2>
+
+{
+  summary.monthlySpend.length > 0 ? (
+    <MonthlyLineChart
+      data={summary.monthlySpend}
+    />
+  ) : (
+    <p>No monthly spending data available.</p>
+  )
+}
 
 
-    <table
+<table
 
-    border="1"
+border="1"
 
-    cellPadding="10"
+cellPadding="10"
 
-    style={{
+style={{
 
-      width:"100%",
+  width:"100%",
 
-      borderCollapse:"collapse",
+  borderCollapse:"collapse",
 
-      marginBottom:"30px"
+  marginBottom:"30px"
 
-    }}
+}}
 
-    >
-
+>
     <thead>
 
     <tr>

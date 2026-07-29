@@ -7,12 +7,36 @@ import {
 } from "recharts";
 
 
-function ExpensePieChart({data}){
+const COLORS = [
+  "#0088FE",
+  "#00C49F",
+  "#FFBB28",
+  "#FF8042",
+  "#AF19FF",
+  "#FF4560",
+  "#26A69A",
+  "#775DD0"
+];
 
 
-return(
+function ExpensePieChart({data}) {
 
-<div>
+
+return (
+
+<div
+
+style={{
+
+width:"500px",
+
+height:"400px",
+
+marginBottom:"30px"
+
+}}
+
+>
 
 
 <h2>
@@ -20,9 +44,13 @@ Spend By Category
 </h2>
 
 
+
 <PieChart
-width={400}
-height={300}
+
+width={500}
+
+height={350}
+
 >
 
 
@@ -38,13 +66,35 @@ cx="50%"
 
 cy="50%"
 
-outerRadius={100}
+outerRadius={120}
 
+label
+
+>
+
+
+{
+
+data.map((entry,index)=>(
+
+<Cell
+
+key={index}
+
+fill={COLORS[index % COLORS.length]}
 
 />
 
+))
+
+}
+
+
+</Pie>
+
 
 <Tooltip/>
+
 
 <Legend/>
 
@@ -53,6 +103,7 @@ outerRadius={100}
 
 
 </div>
+
 
 )
 
