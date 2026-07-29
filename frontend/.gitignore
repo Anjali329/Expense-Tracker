@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+ml/notebooks/.ipynb_checkpoints/
+__pycache__/
+*.pyc

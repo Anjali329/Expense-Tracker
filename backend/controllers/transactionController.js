@@ -55,49 +55,160 @@ const addTransaction = async (req, res) => {
 // Get Transactions
 
 const getTransactions = async (req, res) => {
+  try {
+    console.log("Decoded User:", req.user);
 
-    try {
+    const userId = req.user.id;
 
-        const userId = req.user.id;
+    console.log("User ID:", userId);
 
-        const result = await pool.query(
+    console.log("========== DEBUG ==========");
+console.log("User ID:", userId);
 
-            "SELECT * FROM transactions WHERE user_id=$1 ORDER BY created_at DESC",
+const allTransactions = await pool.query(`
+  SELECT id, user_id, description
+  FROM transactions
+`);
 
-            [userId]
+console.log("All Transactions:");
+console.table(allTransactions.rows);
 
+const result = await pool.query(
+  `
+  SELECT *
+  FROM transactions
+  WHERE user_id = $1
+  ORDER BY created_at DESC
+  `,
+  [userId]
+);
+
+console.log("Filtered Transactions:");
+console.table(result.rows);
+console.log("==========================");
+
+    res.json({
+      success: true,
+      transactions: result.rows,
+    });
+
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
+const updateTransactionCategory = async(req,res)=>{
+
+    try{
+
+        const {id}=req.params;
+        const {category}=req.body;
+
+
+        // 1. Get old category
+
+        const oldData = await pool.query(
+            `
+            SELECT category
+            FROM transactions
+            WHERE id=$1
+            `,
+            [id]
         );
+
+
+        if(oldData.rows.length===0){
+
+            return res.status(404).json({
+                message:"Transaction not found"
+            });
+
+        }
+
+
+
+        const oldCategory =
+        oldData.rows[0].category;
+
+
+
+        // 2. Update transaction category
+
+        await pool.query(
+            `
+            UPDATE transactions
+            SET category=$1
+            WHERE id=$2
+            `,
+            [
+                category,
+                id
+            ]
+        );
+
+
+
+        // 3. Store feedback
+
+        await pool.query(
+            `
+            INSERT INTO category_feedback
+            (
+                transaction_id,
+                old_category,
+                corrected_category
+            )
+
+            VALUES($1,$2,$3)
+
+            `,
+            [
+                id,
+                oldCategory,
+                category
+            ]
+        );
+
+
 
         res.json({
 
-            success: true,
-
-            transactions: result.rows
+            message:
+            "Category updated and feedback stored"
 
         });
 
-    }
 
-    catch (error) {
+    }
+    catch(error){
 
         console.log(error);
 
         res.status(500).json({
-
-            success: false,
-
-            message: "Server Error"
-
+            message:"Server error"
         });
 
     }
 
-};
+}
+
+
+
+module.exports={
+    updateTransactionCategory
+}
 
 module.exports = {
 
     addTransaction,
 
-    getTransactions
+    getTransactions , 
+
+    updateTransactionCategory
 
 };

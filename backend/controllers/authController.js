@@ -49,9 +49,15 @@ const signup = async (req, res) => {
 };
 
 // Login
+// Login
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    console.log("==================================");
+    console.log("LOGIN API CALLED");
+    console.log("Email received:", email);
+    console.log("Password received:", password);
 
     if (!email || !password) {
       return res.status(400).json({
@@ -66,6 +72,8 @@ const login = async (req, res) => {
     );
 
     if (result.rows.length === 0) {
+      console.log("❌ User not found");
+
       return res.status(400).json({
         success: false,
         message: "User not found"
@@ -74,7 +82,12 @@ const login = async (req, res) => {
 
     const user = result.rows[0];
 
+    console.log("User found:", user.email);
+    console.log("Stored Hash:", user.password);
+
     const isMatch = await bcrypt.compare(password, user.password);
+
+    console.log("Password Match:", isMatch);
 
     if (!isMatch) {
       return res.status(400).json({
@@ -96,16 +109,16 @@ const login = async (req, res) => {
 
     console.log("Generated Token:", token);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Login Successful",
       token
     });
 
   } catch (error) {
-    console.error(error);
+    console.error("Login Error:", error);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Internal Server Error"
     });

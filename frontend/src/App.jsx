@@ -1,24 +1,20 @@
-import { useEffect, useState } from "react";
+import { Routes, Route } from "react-router-dom";
+
+import Login from "./pages/Login";
+import Signup from "./pages/SignUp";
+import Dashboard from "./pages/Dashboard";
+import Upload from "./pages/Upload";
+import Transactions from "./pages/Transactions";
 
 function App() {
-  const [message, setMessage] = useState("Loading...");
-
-  useEffect(() => {
-    fetch("http://localhost:5000/ping")
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message))
-      .catch((err) => {
-        console.error(err);
-        setMessage("Backend not connected");
-      });
-  }, []);
-
   return (
-    <div style={{ padding: "40px" }}>
-      <h1>AI Expense Tracker</h1>
-      <h2>Backend Status</h2>
-      <p>{message}</p>
-    </div>
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/upload" element={<Upload />} />
+      <Route path="/transactions" element={<Transactions />} />
+    </Routes>
   );
 }
 
