@@ -5,36 +5,85 @@ const { spawnSync } = require("child_process");
 
 const pool = require("../config/db");
 
+
 const uploadCSV = async (req, res) => {
+  console.log("🔥 uploadCSV controller reached");
+  console.log(req.file);
+
   console.log(`📤 Upload started: ${req.file?.originalname}`);
+
   try {
 
     // Check Login
     if (!req.user) {
       return res.status(401).json({
-        success: false,
-        message: "Unauthorized"
+        success:false,
+        message:"Unauthorized"
       });
     }
+
 
     // Check CSV
     if (!req.file) {
       return res.status(400).json({
-        success: false,
-        message: "No CSV file uploaded"
+        success:false,
+        message:"No CSV file uploaded"
       });
     }
 
+
     const results = [];
 
-    fs.createReadStream(req.file.path)
-      .pipe(csv())
+    let invalidFormat = false;
+    let headersChecked = false;
 
-      .on("data", (data) => {
+    console.log("Opening file:", req.file.path);
+      const parser = csv();
 
-        if (results.length >= 10) return;
+      fs.createReadStream(req.file.path)
+        .pipe(parser)
 
+        .on("data", (data) => {
+
+            if (results.length >= 10) {
+                return;
+            }
+            console.log("Reading row:", results.length + 1);
+        // Validate first row headers
         
+          if(results.length === 0){
+
+    if (!headersChecked) {
+
+        headersChecked = true;
+
+        const headers = Object.keys(data);
+
+        const hasDescription =
+            headers.includes("Description") ||
+            headers.includes("Narration") ||
+            headers.includes("Remarks") ||
+            headers.includes("merchant_category") ||
+            headers.includes("clean_description");
+
+        const hasAmount =
+            headers.includes("Amount") ||
+            headers.includes("Debit") ||
+            headers.includes("Withdrawal Amt.") ||
+            headers.includes("transaction_amount");
+
+        if (!hasDescription || !hasAmount) {
+            invalidFormat = true;
+        }
+    }
+
+}
+        if(invalidFormat){
+          return;
+        }
+
+
+
         const normalized = {
 
           date:
@@ -45,6 +94,7 @@ const uploadCSV = async (req, res) => {
             data["Date "] ||
             "",
 
+
           description:
             data["Description"] ||
             data["Narration"] ||
@@ -53,106 +103,248 @@ const uploadCSV = async (req, res) => {
             data["clean_description"] ||
             "",
 
+
           amount:
             data["Amount"] ||
             data["Debit"] ||
             data["Withdrawal Amt."] ||
             data["transaction_amount"] ||
             0
+
         };
 
-        const pythonResult = spawnSync(
-          "python",
-          [
-            path.join(process.cwd(), "../ml/scripts/predict.py"),
-            normalized.description
-          ],
-          {
-            cwd: process.cwd()
-          }
-        );
 
-        
 
-        const output = pythonResult.stdout.toString().trim();
+        // ML Prediction
 
-        if (output) {
-
-          const [category, confidence] = output.split("|");
-
-          normalized.category = category;
-          normalized.confidence = Number(confidence);
-
-        } else {
-
-          normalized.category = "Unknown";
-          normalized.confidence = 0;
-
-        }
+        normalized.category = "Test";
+        normalized.confidence = 1;
 
         results.push(normalized);
+        
 
+      
       })
 
-      .on("end", async () => {
 
-        try {
 
-          console.log(`✅ CSV Parsed Successfully (${results.length} rows)`);
+      .on("end",async()=>{
+        console.log("CSV parsing completed.");
+        console.log("Total rows parsed:", results.length);
 
-          for (const transaction of results) {
+        console.log(results);
 
-            await pool.query(
-              `
-              INSERT INTO transactions
-              (user_id, description, amount, category, confidence, date)
-              VALUES ($1,$2,$3,$4,$5,$6)
-              `,
-              [
-                req.user.id,
-                transaction.description,
-                transaction.amount,
-                transaction.category,
-                transaction.confidence,
-                transaction.date || null
-              ]
-            );
+
+        try{
+
+
+          // Invalid CSV check
+
+          if(invalidFormat){
+
+            return res.status(400).json({
+
+              success:false,
+
+              message:
+              "Invalid CSV format. Required columns missing."
+
+            });
 
           }
 
-          console.log(`✅ ${results.length} transactions saved into database.`);
+
+
+          // Empty CSV check
+
+          if(results.length===0){
+
+            return res.status(400).json({
+
+              success:false,
+
+              message:"CSV file is empty"
+
+            });
+
+          }
+
+
+
+          let inserted=0;
+          let duplicates=0;
+
+
+
+          for(const transaction of results){
+
+
+
+            // Duplicate check
+
+            const existing =
+            await pool.query(
+
+              `
+              SELECT id 
+              FROM transactions
+              WHERE user_id=$1
+              AND description=$2
+              AND amount=$3
+              AND date=$4
+              `,
+              [
+
+                req.user.id,
+
+                transaction.description,
+
+                transaction.amount,
+
+                transaction.date || null
+
+              ]
+
+            );
+
+
+
+            if(existing.rows.length>0){
+
+              duplicates++;
+
+              continue;
+
+            }
+
+
+
+            await pool.query(
+
+              `
+              INSERT INTO transactions
+              (user_id,
+              description,
+              amount,
+              category,
+              confidence,
+              date)
+
+              VALUES($1,$2,$3,$4,$5,$6)
+              `,
+
+              [
+
+                req.user.id,
+
+                transaction.description,
+
+                transaction.amount,
+
+                transaction.category,
+
+                transaction.confidence,
+
+                transaction.date || null
+
+              ]
+
+            );
+
+
+            inserted++;
+
+
+          }
+
+
+
+          console.log(
+            `✅ Inserted ${inserted}, Duplicate ${duplicates}`
+          );
+
+
+
+          // Remove uploaded file
+
+          fs.unlinkSync(req.file.path);
+
+
+
           res.status(200).json({
-            success: true,
-            message: "CSV Parsed Successfully",
-            totalRows: results.length,
-            data: results
+
+            success:true,
+
+            message:"CSV upload completed",
+
+            inserted,
+
+            duplicates,
+
+            totalRows:results.length,
+
+            data:results
+
           });
 
-        } catch (err) {
 
-          console.error("Database Error:", err);
+
+        }
+
+
+        catch(err){
+
+          console.error(
+            "Database Error:",
+            err
+          );
+
 
           res.status(500).json({
-            success: false,
-            message: "Database Error"
+
+            success:false,
+
+            message:"Database Error"
+
           });
 
         }
 
-      });
 
-  } catch (error) {
+      })
+      .on("error", (err) => {
+
+        console.log("CSV ERROR:");
+        console.log(err);
+
+});
+
+
+
+  }
+
+
+  catch(error){
+
 
     console.error(error);
 
+
     res.status(500).json({
-      success: false,
-      message: "Internal Server Error"
+
+      success:false,
+
+      message:"Internal Server Error"
+
     });
 
+
   }
+
 };
 
-module.exports = {
+
+
+module.exports={
   uploadCSV
 };

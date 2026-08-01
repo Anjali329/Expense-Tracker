@@ -2,21 +2,24 @@ import { useState } from "react";
 import api from "../api/api";
 import Navbar from "../components/Navbar";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function Upload() {
 
   const [file, setFile] = useState(null);
 
-  const [message, setMessage] = useState("");
-
   const [dragActive, setDragActive] = useState(false);
+  const [uploadInfo, setUploadInfo] = useState(null);
+  const [loading, setLoading] = useState(false);
 
 
   const uploadCSV = async () => {
 
     if (!file) {
-      setMessage("Please select a CSV file");
-      return;
-    }
+          toast.error("Please select a CSV file");
+          return;
+}
 
 
     const formData = new FormData();
@@ -26,32 +29,57 @@ function Upload() {
 
 
     try {
-
+      setUploadInfo(null);
+      setLoading(true);
       const token = localStorage.getItem("token");
 
 
-      await api.post(
-        "/transactions/upload",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
+      const response = await api.post(
+    "/upload",
+    formData,
+    {
+        headers:{
+            Authorization:`Bearer ${token}`,
+            "Content-Type":"multipart/form-data"
         }
-      );
+    }
+);
 
+toast.success(response.data.message);
+setUploadInfo({
+    inserted: response.data.inserted,
+    duplicates: response.data.duplicates,
+    totalRows: response.data.totalRows,
+});
 
-      setMessage("CSV uploaded successfully ✅");
+setLoading(false);
 
+if (response.data.duplicates > 0) {
+    toast.warning(
+        `${response.data.duplicates} duplicate transactions skipped`
+    );
+}
+    } catch (error) {
 
-    } catch(error) {
+    console.log("========== UPLOAD ERROR ==========");
+    console.log(error);
 
-      console.log(error);
+    setUploadInfo(null);
+    setFile(null);
 
-      setMessage("Upload failed ❌");
+    setLoading(false);
+
+    if (error.response) {
+
+        toast.error(error.response.data.message);
+
+    } else {
+
+        toast.error("Server not responding");
 
     }
+
+}
 
   };
 
@@ -102,7 +130,8 @@ const handleDrop = (e) => {
 
     <div
       style={{
-        minHeight:"80vh",
+        minHeight:"100vh",
+        padding:"20px",
         display:"flex",
         justifyContent:"center",
         alignItems:"center",
@@ -113,25 +142,38 @@ const handleDrop = (e) => {
 
       <div
         style={{
-          width:"450px",
+          width:"100%",
+          maxWidth:"450px",
           padding:"35px",
           background:"white",
           borderRadius:"15px",
           boxShadow:"0 5px 20px rgba(0,0,0,0.1)",
-          textAlign:"center"
-        }}
+          textAlign:"center",
+          margin:"20px"
+}}
       >
 
 
-        <h1>
+        <h1
+          style={{
+            fontSize: "28px",
+            marginBottom: "10px",
+            color: "#1f2937"
+          }}
+        >
           Upload Transactions CSV
-        </h1>
+</h1>
 
 
-        <p>
-          Upload your bank transaction CSV file
-        </p>
-
+        <p
+          style={{
+            color: "#6b7280",
+            marginBottom: "25px",
+            lineHeight: "1.5"
+          }}
+        >
+          Upload your bank transaction CSV file for automatic AI categorization.
+</p>
         <div
 
           onDragOver={handleDragOver}
@@ -142,25 +184,15 @@ const handleDrop = (e) => {
 
 
           style={{
-
-          border:"2px dashed",
-
-          borderColor:
-          dragActive
-          ?
-          "green"
-          :
-          "#888",
-
-          padding:"40px",
-
-          borderRadius:"10px",
-
-          marginTop:"20px",
-
-          cursor:"pointer"
-
-          }}
+            border:"2px dashed",
+            borderColor: dragActive ? "green" : "#888",
+            background: dragActive ? "#ecfdf5" : "#fafafa",
+            transition:"0.3s ease",
+            padding:"30px 20px",
+            borderRadius:"10px",
+            marginTop:"20px",
+            cursor:"pointer"
+}}
 
           >
 
@@ -175,19 +207,14 @@ const handleDrop = (e) => {
           <p>
           OR
           </p>
-
-
-          <input
-
-          type="file"
-
-          accept=".csv"
-
-          onChange={
-          (e)=>setFile(e.target.files[0])
-          }
-
-          />
+            
+              <input
+                type="file"
+                accept=".csv"
+                disabled={loading}
+                style={{ marginTop: "10px" }}
+                onChange={(e) => setFile(e.target.files[0])}
+/>
 
 
 </div>
@@ -199,9 +226,15 @@ const handleDrop = (e) => {
         {
           file &&
 
-          <p>
-            Selected: {file.name}
-          </p>
+          <p
+            style={{
+                marginTop:"10px",
+                wordBreak:"break-word",
+                color:"#444"
+}}
+>
+Selected: {file.name}
+</p>
 
         }
 
@@ -210,35 +243,69 @@ const handleDrop = (e) => {
         <button
 
           onClick={uploadCSV}
+          disabled={loading}
 
           style={{
             marginTop:"20px",
-            padding:"12px 25px",
+            width:"100%",
+            padding:"14px",
             border:"none",
             borderRadius:"8px",
-            background:"#2563eb",
+            background: loading ? "#9ca3af" : "#2563eb",
+            cursor: loading ? "not-allowed" : "pointer", 
             color:"white",
             fontSize:"16px",
-            cursor:"pointer"
-          }}
+            fontWeight:"bold",
+            transition:"0.3s"
+}}
+          >
 
-        >
-
-          Upload CSV
+          {loading ? "Uploading..." : "Upload CSV"}
 
         </button>
+        {
+          uploadInfo && (
 
+          <div
+          style={{
+            marginTop:"20px",
+            padding:"15px",
+            background:"#f3f4f6",
+            borderRadius:"8px",
+            textAlign:"left"
+}}
+          >
 
+          <p>
+          <b>Total Rows:</b> {uploadInfo.totalRows}
+          </p>
 
-        <h3>
-          {message}
-        </h3>
+          <p>
+          <b>Inserted:</b> {uploadInfo.inserted}
+          </p>
+
+          <p>
+          <b>Duplicates:</b> {uploadInfo.duplicates}
+          </p>
+
+          </div>
+
+          )
+}
 
 
       </div>
 
 
     </div>
+    <ToastContainer
+    position="top-right"
+    autoClose={3000}
+    hideProgressBar={false}
+    newestOnTop
+    closeOnClick
+    pauseOnHover
+/>
 
 
     </>
