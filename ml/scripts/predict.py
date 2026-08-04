@@ -1,32 +1,64 @@
 import joblib
 import sys
-import os
+import json
+from pathlib import Path
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# -----------------------------
+# Get project root (ml folder)
+# -----------------------------
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-model = joblib.load(
-    os.path.join(BASE_DIR, "../models/expense_classifier.joblib")
-)
+# -----------------------------
+# Model file paths
+# -----------------------------
+MODEL_PATH = BASE_DIR / "models" / "expense_classifier.joblib"
+VECTORIZER_PATH = BASE_DIR / "models" / "tfidf_vectorizer.joblib"
 
-vectorizer = joblib.load(
-    os.path.join(BASE_DIR, "../models/tfidf_vectorizer.joblib")
-)
+# -----------------------------
+# Load trained model
+# -----------------------------
+model = joblib.load(MODEL_PATH)
 
-THRESHOLD = 0.70
+# -----------------------------
+# Load TF-IDF vectorizer
+# -----------------------------
+vectorizer = joblib.load(VECTORIZER_PATH)
+
+# -----------------------------
+# Read description from command line
+# -----------------------------
+if len(sys.argv) < 2:
+    print(json.dumps({
+        "success": False,
+        "message": "No description provided."
+    }))
+    sys.exit()
 
 description = sys.argv[1]
 
-description_vector = vectorizer.transform([description])
+# -----------------------------
+# Convert text into TF-IDF features
+# -----------------------------
+X = vectorizer.transform([description])
 
-probabilities = model.predict_proba(description_vector)[0]
+# -----------------------------
+# Predict category
+# -----------------------------
+prediction = model.predict(X)[0]
 
-best_index = probabilities.argmax()
+# -----------------------------
+# Predict confidence
+# -----------------------------
+confidence = None
 
-confidence = probabilities[best_index]
+if hasattr(model, "predict_proba"):
+    confidence = max(model.predict_proba(X)[0])
 
-predicted_category = model.classes_[best_index]
-
-if confidence < THRESHOLD:
-    predicted_category = "Needs Review"
-
-print(f"{predicted_category}|{confidence}")
+# -----------------------------
+# Return JSON output
+# -----------------------------
+print(json.dumps({
+    "success": True,
+    "category": prediction,
+    "confidence": round(float(confidence), 4) if confidence is not None else None
+}))

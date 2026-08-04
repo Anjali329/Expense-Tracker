@@ -115,12 +115,70 @@ const uploadCSV = async (req, res) => {
 
 
 
-        // ML Prediction
+        // -------------------------
+// AI Prediction
+// -------------------------
 
-        normalized.category = "Test";
-        normalized.confidence = 1;
+const pythonResult = spawnSync(
 
-        results.push(normalized);
+    "python",
+
+    [
+
+        path.join(__dirname, "../../ml/scripts/predict.py"),
+
+        normalized.description
+
+    ],
+
+    {
+
+        encoding: "utf-8"
+
+    }
+
+);
+
+if (pythonResult.error) {
+
+    console.error("Python Error:", pythonResult.error);
+
+    normalized.category = "Unknown";
+
+    normalized.confidence = 0;
+
+}
+else {
+
+    try {
+
+        const prediction = JSON.parse(
+
+            pythonResult.stdout.trim()
+
+        );
+
+        normalized.category = prediction.category;
+
+        normalized.confidence = prediction.confidence;
+
+    }
+
+    catch (err) {
+
+        console.error("Prediction Parse Error:", err);
+
+        console.log("Python Output:", pythonResult.stdout);
+
+        normalized.category = "Unknown";
+
+        normalized.confidence = 0;
+
+    }
+
+}
+
+results.push(normalized);
         
 
       

@@ -7,6 +7,7 @@ const authRoutes = require("./routes/authRoutes");
 const transactionRoutes = require("./routes/transactionRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
 const insightRoutes = require("./routes/insightRoutes");
+const receiptRoutes = require("./routes/receiptRoutes");
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use("/auth", authRoutes);
 app.use("/transactions", transactionRoutes);
 app.use("/upload", uploadRoutes);
 app.use("/insights",insightRoutes);
+app.use("/receipt", receiptRoutes);
 
 app.get("/ping", (req, res) => {
   res.json({
