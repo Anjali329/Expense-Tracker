@@ -142,10 +142,10 @@ const pythonResult = spawnSync(
 
 // DEBUG LOGS
 console.log("========== PYTHON DEBUG ==========");
-console.log("Exit Code:", pythonResult.status);
 console.log("STDOUT:", pythonResult.stdout);
 console.log("STDERR:", pythonResult.stderr);
-console.log("Error:", pythonResult.error);
+console.log("STATUS:", pythonResult.status);
+console.log("ERROR:", pythonResult.error);
 console.log("==================================");
 
 if (pythonResult.error) {
