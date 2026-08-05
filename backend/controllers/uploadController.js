@@ -119,6 +119,7 @@ const uploadCSV = async (req, res) => {
 // AI Prediction
 // -------------------------
 
+
 const pythonResult = spawnSync(
 
     "python",
@@ -138,6 +139,14 @@ const pythonResult = spawnSync(
     }
 
 );
+
+// DEBUG LOGS
+console.log("========== PYTHON DEBUG ==========");
+console.log("Exit Code:", pythonResult.status);
+console.log("STDOUT:", pythonResult.stdout);
+console.log("STDERR:", pythonResult.stderr);
+console.log("Error:", pythonResult.error);
+console.log("==================================");
 
 if (pythonResult.error) {
 
